@@ -1,0 +1,14 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<div class="login-container">
+    <div class="card login-card">
+        <h2>Login de Administrador</h2>
+        <form method="post" class="styled-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn primary-btn">Entrar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

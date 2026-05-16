@@ -1,0 +1,32 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<div class="hero">
+    <h1>Bem-vindo ao PetAdopt!</h1>
+    <p>Encontre seu novo melhor amigo hoje. Temos cães e gatos maravilhosos procurando por um lar amoroso.</p>
+</div>
+
+<div class="pet-grid">
+    {% for pet in pets %}
+        <div class="pet-card">
+            {% if pet.image_file %}
+                <img src="{{ pet.image_file.url }}" alt="Foto de {{ pet.name }}" class="pet-img">
+            {% elif pet.image_url %}
+                <img src="{{ pet.image_url }}" alt="Foto de {{ pet.name }}" class="pet-img">
+            {% else %}
+                <div class="pet-placeholder">🐾 Sem Imagem</div>
+            {% endif %}
+            <div class="pet-info">
+                <h2>{{ pet.name }} <span class="badge">{{ pet.species }}</span></h2>
+                <p>{{ pet.description }}</p>
+                <form method="post" action="{% url 'adopt_pet' pet.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn primary-btn">Me Adote!</button>
+                </form>
+            </div>
+        </div>
+    {% empty %}
+        <p class="no-pets">Não há pets disponíveis para adoção no momento. Volte mais tarde!</p>
+    {% endfor %}
+</div>
+{% endblock %}

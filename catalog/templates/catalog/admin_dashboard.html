@@ -1,0 +1,131 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+<div class="admin-header">
+    <h1>Painel de Administração</h1>
+    <p>Gerencie o catálogo. Adicione pets manualmente ou use as APIs.</p>
+</div>
+
+<div class="admin-actions">
+    <div class="card add-manual">
+        <h3>Adicionar Pet Manualmente</h3>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="add_manual">
+            <div class="form-group">
+                <label>Nome</label>
+                <input type="text" name="name" required placeholder="Ex. Rex">
+            </div>
+            <div class="form-group">
+                <label>Espécie</label>
+                <input type="text" name="species" required placeholder="Ex. Cão">
+            </div>
+            <div class="form-group">
+                <label>Descrição</label>
+                <textarea name="description" required placeholder="Uma breve descrição..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Upload de Imagem (opcional)</label>
+                <input type="file" name="image_file" accept="image/*">
+            </div>
+            <button type="submit" class="btn primary-btn">Adicionar Pet</button>
+        </form>
+    </div>
+
+    <div class="card add-api">
+        <h3>Pet Aleatório via API</h3>
+        <p>Use o Command Pattern para buscar e adicionar um pet aleatório.</p>
+        <div class="api-buttons">
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_dog">
+                <button type="submit" class="btn dog-btn">🐶 Adicionar Cão Aleatório</button>
+            </form>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_cat">
+                <button type="submit" class="btn cat-btn">🐱 Adicionar Gato Aleatório</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="admin-list">
+    <h2>Todos os Pets</h2>
+    <table class="modern-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Imagem</th>
+                <th>Nome</th>
+                <th>Espécie</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pet in pets %}
+                <tr>
+                    <td>{{ pet.id }}</td>
+                    <td>
+                        {% if pet.image_file %}
+                            <img src="{{ pet.image_file.url }}" alt="pet" class="table-img">
+                        {% elif pet.image_url %}
+                            <img src="{{ pet.image_url }}" alt="pet" class="table-img">
+                        {% else %}
+                            <span class="no-img">N/A</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ pet.name }}</td>
+                    <td><span class="badge">{{ pet.species }}</span></td>
+                    <td>
+                        {% if pet.is_adopted %}
+                            <span class="status adopted">Adotado</span>
+                        {% else %}
+                            <span class="status available">Disponível</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="actions-cell">
+                            {% if not pet.is_adopted %}
+                            <form method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="mark_adopted">
+                                <input type="hidden" name="pet_id" value="{{ pet.id }}">
+                                <button type="submit" class="action-btn success-btn" title="Marcar como Adotado">✅</button>
+                            </form>
+                            {% endif %}
+                            <form method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="remove_pet">
+                                <input type="hidden" name="pet_id" value="{{ pet.id }}">
+                                <button type="submit" class="action-btn danger-btn" title="Remover do Catálogo">🗑️</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5">Nenhum pet encontrado.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Salva a posição do scroll antes de recarregar a página
+    window.addEventListener("beforeunload", function() {
+        sessionStorage.setItem("scrollPosition", window.scrollY);
+    });
+
+    // Restaura a posição do scroll logo após carregar a página
+    document.addEventListener("DOMContentLoaded", function() {
+        let scrollPosition = sessionStorage.getItem("scrollPosition");
+        if (scrollPosition !== null) {
+            window.scrollTo(0, parseInt(scrollPosition, 10));
+            sessionStorage.removeItem("scrollPosition"); // Limpa após usar
+        }
+    });
+</script>
+{% endblock %}
