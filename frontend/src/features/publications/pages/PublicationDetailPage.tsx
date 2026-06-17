@@ -3,14 +3,30 @@ import { useParams, Link, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePublication } from "../hooks/usePublications";
 import { Button } from "@/shared/components/ui/Button";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useStartChat } from "@/features/chat/hooks/useChat";
 
 export function PublicationDetailPage() {
   const { id } = useParams({ strict: false });
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { publication, isLoading, error, deletePublication, isDeleting, markAdopted, isMarkingAdopted } = usePublication(id as string);
+  const startChatMutation = useStartChat();
   const [currentImageIdx, setCurrentImageIdx] = useState(0);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showAdoptConfirm, setShowAdoptConfirm] = useState(false);
+
+  const handleInterest = () => {
+    if (!user) {
+      navigate({ to: '/login' });
+      return;
+    }
+    startChatMutation.mutate(id as string, {
+      onSuccess: (data) => {
+        navigate({ to: `/chats/$roomId`, params: { roomId: data.room_id } });
+      }
+    });
+  };
 
   if (isLoading) {
     return (
@@ -244,7 +260,9 @@ export function PublicationDetailPage() {
             {!publication.can_edit && (
               <Button 
                 className="w-full sm:w-auto h-12 px-8 rounded-xl shadow-lg shadow-indigo-500/20 text-lg"
-                disabled={publication.status !== "ACTIVE"}
+                disabled={publication.status !== "ACTIVE" || startChatMutation.isPending}
+                isLoading={startChatMutation.isPending}
+                onClick={handleInterest}
               >
                 Tenho Interesse
               </Button>

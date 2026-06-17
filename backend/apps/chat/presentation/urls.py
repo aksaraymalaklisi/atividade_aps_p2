@@ -1,7 +1,10 @@
-"""Chat URL configuration — endpoints will be implemented in Phase 5."""
+from rest_framework.routers import DefaultRouter
+from django.urls import path, include
+from apps.chat.presentation.views import ChatViewSet
 
-from typing import Any
+router = DefaultRouter()
+router.register(r'', ChatViewSet, basename='chat')
 
-app_name = "chat"
-
-urlpatterns: list[Any] = []
+urlpatterns = [
+    path('', include(router.urls)),
+]

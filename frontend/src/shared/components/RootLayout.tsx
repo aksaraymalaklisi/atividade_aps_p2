@@ -1,8 +1,11 @@
 import { Outlet, Link } from '@tanstack/react-router'
 import { useAuth } from '@/features/auth/hooks/useAuth'
+import { useUnreadCount } from '@/features/chat/hooks/useChat'
 
 export function RootLayout() {
   const { user, logout } = useAuth()
+  const { data: unreadData } = useUnreadCount(!!user)
+  const unreadCount = unreadData?.unread_count || 0
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900 dark:bg-neutral-950 dark:text-neutral-100 font-sans selection:bg-indigo-500/30 transition-colors duration-300">
@@ -22,6 +25,18 @@ export function RootLayout() {
             
             {user ? (
               <div className="flex items-center gap-4 border-l border-slate-200 dark:border-white/10 pl-6">
+                <Link 
+                  to="/chats" 
+                  className="relative text-sm font-semibold text-slate-600 dark:text-neutral-400 hover:text-indigo-600 dark:hover:text-white transition-colors flex items-center gap-2"
+                >
+                  Mensagens
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-2 -right-3 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-white dark:ring-neutral-950">
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </span>
+                  )}
+                </Link>
+                <div className="h-4 w-px bg-slate-300 dark:bg-neutral-700 mx-2" />
                 <span className="text-sm text-slate-700 dark:text-neutral-300 font-medium">
                   {user.first_name || user.username}
                   {(user.is_staff || user.is_operator) && (

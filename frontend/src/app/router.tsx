@@ -65,12 +65,33 @@ const editPublicationRoute = createRoute({
   component: EditPublicationPage,
 })
 
+import { ChatListPage } from '@/features/chat/pages/ChatListPage'
+import { ChatRoomPage } from '@/features/chat/pages/ChatRoomPage'
+
+const chatListRoute = createRoute({
+  getParentRoute: () => protectedRoute,
+  path: '/chats',
+  component: ChatListPage,
+})
+
+const chatRoomRoute = createRoute({
+  getParentRoute: () => protectedRoute,
+  path: '/chats/$roomId',
+  component: ChatRoomPage,
+})
+
 const routeTree = rootRoute.addChildren([
   indexRoute, 
   loginRoute, 
   registerRoute,
   petDetailRoute,
-  protectedRoute.addChildren([organizationsRoute, createPublicationRoute, editPublicationRoute])
+  protectedRoute.addChildren([
+    organizationsRoute, 
+    createPublicationRoute, 
+    editPublicationRoute,
+    chatListRoute,
+    chatRoomRoute
+  ])
 ])
 
 export const router = createRouter({ routeTree })
