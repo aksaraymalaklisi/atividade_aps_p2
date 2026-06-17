@@ -26,6 +26,7 @@ export function useAuth() {
       localStorage.setItem("refreshToken", data.refresh);
       // Pre-fill cache with the returned user
       queryClient.setQueryData(authKeys.profile(), data.user);
+      queryClient.invalidateQueries();
       navigate({ to: "/" });
     },
   });
@@ -40,7 +41,7 @@ export function useAuth() {
 
   const logout = () => {
     authService.logout();
-    queryClient.setQueryData(authKeys.profile(), null);
+    queryClient.clear();
     navigate({ to: "/login" });
   };
 

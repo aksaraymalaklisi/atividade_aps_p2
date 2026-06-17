@@ -32,6 +32,7 @@ export interface Publication {
   created_at: string;
   updated_at: string;
   pet: Pet;
+  can_edit?: boolean;
 }
 
 export interface PublicationsResponse {
@@ -63,8 +64,28 @@ export const publicationsApi = {
 
   create: async (data: FormData): Promise<Publication> => {
     const response = await axiosClient.post("publications/", data, {
-      headers: { "Content-Type": "multipart/form-data" },
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
+    return response.data;
+  },
+
+  update: async (params: { id: string, data: FormData }): Promise<Publication> => {
+    const response = await axiosClient.patch(`publications/${params.id}/`, params.data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await axiosClient.delete(`publications/${id}/`);
+  },
+
+  markAdopted: async (id: string): Promise<Publication> => {
+    const response = await axiosClient.post(`publications/${id}/mark_adopted/`);
     return response.data;
   },
 };

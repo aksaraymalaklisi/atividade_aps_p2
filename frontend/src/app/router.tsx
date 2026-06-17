@@ -11,6 +11,7 @@ import { ProtectedRoute } from '@/features/auth/components/ProtectedRoute'
 import { OrganizationsPage } from '@/features/organizations/pages/OrganizationsPage'
 import { PublicationDetailPage } from '@/features/publications/pages/PublicationDetailPage'
 import { PublicationForm } from '@/features/publications/components/PublicationForm'
+import { EditPublicationPage } from '@/features/publications/pages/EditPublicationPage'
 
 const rootRoute = createRootRoute({
   component: RootLayout,
@@ -58,12 +59,18 @@ const createPublicationRoute = createRoute({
   component: PublicationForm,
 })
 
+const editPublicationRoute = createRoute({
+  getParentRoute: () => protectedRoute,
+  path: '/pet/$id/edit',
+  component: EditPublicationPage,
+})
+
 const routeTree = rootRoute.addChildren([
   indexRoute, 
   loginRoute, 
   registerRoute,
   petDetailRoute,
-  protectedRoute.addChildren([organizationsRoute, createPublicationRoute])
+  protectedRoute.addChildren([organizationsRoute, createPublicationRoute, editPublicationRoute])
 ])
 
 export const router = createRouter({ routeTree })

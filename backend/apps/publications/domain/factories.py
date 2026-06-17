@@ -1,4 +1,5 @@
 import uuid
+
 from apps.publications.domain.entities import PetEntity, PublicationEntity
 
 

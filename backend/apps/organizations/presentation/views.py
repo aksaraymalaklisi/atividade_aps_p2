@@ -73,7 +73,7 @@ class OrganizationViewSet(viewsets.ModelViewSet):
         """Operator only: Approve organization"""
         if not pk:
             return Response({"error": "Organization ID is required."}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         try:
             org_id = uuid.UUID(str(pk))
         except ValueError:
@@ -82,7 +82,7 @@ class OrganizationViewSet(viewsets.ModelViewSet):
         repo_org = DjangoOrganizationRepository()
 
         command = ApproveOrganizationCommand(
-            organization_id=org_id, 
+            organization_id=org_id,
             operator_id=request.user.id,  # type: ignore
             repository=repo_org
         )
@@ -98,7 +98,7 @@ class OrganizationViewSet(viewsets.ModelViewSet):
         """Operator only: Reject organization"""
         if not pk:
             return Response({"error": "Organization ID is required."}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         try:
             org_id = uuid.UUID(str(pk))
         except ValueError:

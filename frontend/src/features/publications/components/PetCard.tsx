@@ -22,7 +22,7 @@ export function PetCard({ publication }: PetCardProps) {
       transition={{ duration: 0.3 }}
       className="group relative flex flex-col bg-white/70 dark:bg-neutral-900/60 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-3xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] dark:hover:shadow-[0_20px_40px_rgba(255,255,255,0.05)] cursor-pointer"
     >
-      <Link to="/pet/$id" params={{ id: publication.id }} className="absolute inset-0 z-10" />
+      <Link to="/pet/$id" params={{ id: publication.id }} className="absolute inset-0 z-[100]" />
       
       {/* Image Section */}
       <div className="relative h-64 overflow-hidden bg-slate-100 dark:bg-neutral-800">

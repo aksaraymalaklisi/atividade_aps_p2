@@ -32,7 +32,7 @@ export function RootLayout() {
                 </span>
                 <button 
                   onClick={logout}
-                  className="text-sm font-semibold text-slate-600 dark:text-neutral-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                  className="text-sm font-semibold text-slate-600 dark:text-neutral-400 hover:text-red-500 dark:hover:text-red-400 transition-colors cursor-pointer"
                 >
                   Sair
                 </button>

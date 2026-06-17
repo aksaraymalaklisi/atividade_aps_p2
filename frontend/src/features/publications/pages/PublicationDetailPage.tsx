@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { useParams, Link } from "@tanstack/react-router";
+import { useParams, Link, useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePublication } from "../hooks/usePublications";
 import { Button } from "@/shared/components/ui/Button";
 
 export function PublicationDetailPage() {
   const { id } = useParams({ strict: false });
-  const { publication, isLoading, error } = usePublication(id as string);
+  const navigate = useNavigate();
+  const { publication, isLoading, error, deletePublication, isDeleting, markAdopted, isMarkingAdopted } = usePublication(id as string);
   const [currentImageIdx, setCurrentImageIdx] = useState(0);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showAdoptConfirm, setShowAdoptConfirm] = useState(false);
 
   if (isLoading) {
     return (
@@ -38,14 +41,87 @@ export function PublicationDetailPage() {
   const genderIcon = pet.gender === "MALE" ? "♂ Macho" : pet.gender === "FEMALE" ? "♀ Fêmea" : "Desconhecido";
   const sizeText = pet.size === "SMALL" ? "Pequeno" : pet.size === "MEDIUM" ? "Médio" : "Grande";
 
+
+
   return (
     <div className="min-h-screen pt-24 pb-20 px-4 max-w-6xl mx-auto">
-      <Link to="/" className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-medium mb-8 hover:opacity-80 transition-opacity">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-        </svg>
-        Voltar para o catálogo
-      </Link>
+      {/* Modals */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-neutral-900 rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-white/10">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Apagar Publicação</h3>
+            <p className="text-slate-600 dark:text-neutral-400 mb-6">Tem certeza que deseja apagar esta publicação? Esta ação não pode ser desfeita.</p>
+            <div className="flex gap-3 justify-end">
+              <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>Cancelar</Button>
+              <Button 
+                onClick={async () => {
+                  await deletePublication(id as string);
+                  navigate({ to: "/" });
+                }} 
+                isLoading={isDeleting}
+                className="bg-red-600 hover:bg-red-700 text-white border-0"
+              >
+                Sim, apagar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAdoptConfirm && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-neutral-900 rounded-2xl p-6 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-white/10">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Marcar como Adotado</h3>
+            <p className="text-slate-600 dark:text-neutral-400 mb-6">Deseja marcar este pet como Adotado?</p>
+            <div className="flex gap-3 justify-end">
+              <Button variant="outline" onClick={() => setShowAdoptConfirm(false)}>Cancelar</Button>
+              <Button 
+                onClick={async () => {
+                  await markAdopted(id as string);
+                  setShowAdoptConfirm(false);
+                }} 
+                isLoading={isMarkingAdopted}
+                className="bg-green-600 hover:bg-green-700 text-white border-0"
+              >
+                Confirmar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="flex items-center justify-between mb-8">
+        <Link to="/" className="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-medium hover:opacity-80 transition-opacity">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+          </svg>
+          Voltar para o catálogo
+        </Link>
+
+        {publication.can_edit && (
+          <div className="flex gap-2">
+            {publication.status === "ACTIVE" && (
+              <Button 
+                variant="outline" 
+                onClick={() => setShowAdoptConfirm(true)}
+                className="border-green-500 text-green-600 hover:bg-green-50 dark:border-green-400 dark:text-green-400 dark:hover:bg-green-500/10"
+              >
+                Marcar Adotado
+              </Button>
+            )}
+            <Link to="/pet/$id/edit" params={{ id: publication.id }}>
+              <Button variant="outline">Editar</Button>
+            </Link>
+            <Button 
+              variant="outline" 
+              onClick={() => setShowDeleteConfirm(true)}
+              className="border-red-500 text-red-600 hover:bg-red-50 dark:border-red-400 dark:text-red-400 dark:hover:bg-red-500/10"
+            >
+              Apagar
+            </Button>
+          </div>
+        )}
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Left: Image Carousel */}
@@ -165,12 +241,14 @@ export function PublicationDetailPage() {
                 </p>
               </div>
             </div>
-            <Button 
-              className="w-full sm:w-auto h-12 px-8 rounded-xl shadow-lg shadow-indigo-500/20 text-lg"
-              disabled={publication.status !== "ACTIVE"}
-            >
-              Tenho Interesse
-            </Button>
+            {!publication.can_edit && (
+              <Button 
+                className="w-full sm:w-auto h-12 px-8 rounded-xl shadow-lg shadow-indigo-500/20 text-lg"
+                disabled={publication.status !== "ACTIVE"}
+              >
+                Tenho Interesse
+              </Button>
+            )}
           </div>
         </div>
       </div>

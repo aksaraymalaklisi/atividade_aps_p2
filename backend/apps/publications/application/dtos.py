@@ -24,3 +24,24 @@ class CreatePublicationOutputDTO:
     publication_id: uuid.UUID
     pet_id: uuid.UUID | None
     status: str
+
+
+@dataclass(frozen=True)
+class UpdatePublicationInputDTO:
+    publication_id: uuid.UUID
+    name: str | None = None
+    species: str | None = None
+    breed: str | None = None
+    size: str | None = None
+    gender: str | None = None
+    approximate_age: int | None = None
+    description: str | None = None
+    vaccinated: bool | None = None
+    neutered: bool | None = None
+    images: list[Any] | None = None
+
+
+@dataclass(frozen=True)
+class UpdatePublicationStatusInputDTO:
+    publication_id: uuid.UUID
+    status: str

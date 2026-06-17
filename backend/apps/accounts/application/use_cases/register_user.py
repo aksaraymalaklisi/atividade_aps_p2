@@ -15,7 +15,7 @@ class RegisterUserUseCase(BaseUseCase[RegisterUserInput, RegisterUserOutput]):
     """
 
     def __init__(
-        self, 
+        self,
         user_repository: UserRepositoryInterface,
         hash_service: PasswordHashServiceInterface
     ) -> None:

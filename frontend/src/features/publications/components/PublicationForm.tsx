@@ -4,53 +4,72 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion } from "framer-motion";
-import { usePublications } from "../hooks/usePublications";
+import { usePublications, usePublication } from "../hooks/usePublications";
 import { useOrganizations } from "@/features/organizations/hooks/useOrganizations";
 import { Button } from "@/shared/components/ui/Button";
 import { Input } from "@/shared/components/ui/Input";
+import type { Publication } from "../api/publicationsApi";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
-const schema = z.object({
+const getSchema = (isEditing: boolean) => z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   species: z.string().min(2, "Espécie é obrigatória"),
-  breed: z.string().optional(),
+  breed: z.string().nullable().optional(),
   size: z.enum(["SMALL", "MEDIUM", "LARGE"]),
   gender: z.enum(["MALE", "FEMALE", "UNKNOWN"]),
   approximate_age: z.number().min(0, "Idade não pode ser negativa"),
-  description: z.string().optional(),
+  description: z.string().nullable().optional(),
   vaccinated: z.boolean().default(false),
   neutered: z.boolean().default(false),
   organization_id: z.string().optional().nullable(),
   images: z
     .any()
-    .refine((files) => files?.length > 0, "Envie pelo menos 1 foto.")
-    .refine((files) => files?.length <= 5, "Máximo de 5 fotos permitidas.")
+    .optional()
+    .nullable()
+    .refine((files) => isEditing || (files && files.length > 0), "Envie pelo menos 1 foto.")
+    .refine((files) => !files || files.length <= 5, "Máximo de 5 fotos permitidas.")
     .refine((files) => {
+      if (!files) return true;
       let valid = true;
-      for (let i = 0; i < files?.length; i++) {
+      for (let i = 0; i < files.length; i++) {
         if (files[i].size > MAX_FILE_SIZE) valid = false;
       }
       return valid;
     }, `O tamanho máximo por foto é 5MB.`)
     .refine((files) => {
+      if (!files) return true;
       let valid = true;
-      for (let i = 0; i < files?.length; i++) {
+      for (let i = 0; i < files.length; i++) {
         if (!ACCEPTED_IMAGE_TYPES.includes(files[i].type)) valid = false;
       }
       return valid;
     }, "Apenas arquivos .jpg, .jpeg, .png e .webp são aceitos."),
 });
 
-type FormData = z.infer<typeof schema>;
+type FormData = z.infer<ReturnType<typeof getSchema>>;
 
-export function PublicationForm() {
+interface PublicationFormProps {
+  initialData?: Publication;
+}
+
+export function PublicationForm({ initialData }: PublicationFormProps = {}) {
   const navigate = useNavigate();
   const { createPublication, isCreating } = usePublications();
+  const { updatePublication, isUpdating } = usePublication(initialData?.id || "");
   const { organizations } = useOrganizations();
   
-  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const isEditing = !!initialData;
+  const isLoading = isCreating || isUpdating;
+
+  const getFullImageUrl = (url: string) => url.startsWith('/') ? `http://localhost:8000${url}` : url;
+
+  const [previewUrls, setPreviewUrls] = useState<string[]>(
+    initialData 
+      ? initialData.pet.images.sort((a, b) => a.order - b.order).map(img => getFullImageUrl(img.image)) 
+      : []
+  );
   const [serverError, setServerError] = useState<string | null>(null);
 
   const myApprovedOrgs = organizations?.filter(org => org.status === "APPROVED" && org.is_owner) || [];
@@ -61,14 +80,25 @@ export function PublicationForm() {
     setValue,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    defaultValues: {
+    resolver: zodResolver(getSchema(isEditing)),
+    defaultValues: initialData ? {
+      name: initialData.pet.name,
+      species: initialData.pet.species,
+      breed: initialData.pet.breed || "",
+      size: initialData.pet.size,
+      gender: initialData.pet.gender,
+      approximate_age: initialData.pet.approximate_age,
+      description: initialData.pet.description || "",
+      vaccinated: initialData.pet.vaccinated,
+      neutered: initialData.pet.neutered,
+      organization_id: initialData.organization_id || "",
+    } : {
       size: "MEDIUM",
       gender: "UNKNOWN",
       approximate_age: 0,
       vaccinated: false,
       neutered: false,
-      organization_id: null,
+      organization_id: "",
     },
   });
 
@@ -76,9 +106,10 @@ export function PublicationForm() {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
       if (filesArray.length > 5) {
-        alert("Máximo de 5 fotos permitidas.");
+        setServerError("Máximo de 5 fotos permitidas.");
         return;
       }
+      setServerError(null);
       setValue("images", filesArray, { shouldValidate: true });
       
       const newPreviewUrls = filesArray.map(file => URL.createObjectURL(file));
@@ -92,28 +123,47 @@ export function PublicationForm() {
       const formData = new FormData();
       formData.append("name", data.name);
       formData.append("species", data.species);
-      if (data.breed) formData.append("breed", data.breed);
+      formData.append("breed", data.breed || "");
       formData.append("size", data.size);
       formData.append("gender", data.gender);
       formData.append("approximate_age", data.approximate_age.toString());
-      if (data.description) formData.append("description", data.description);
+      formData.append("description", data.description || "");
       formData.append("vaccinated", data.vaccinated.toString());
       formData.append("neutered", data.neutered.toString());
       if (data.organization_id) {
         formData.append("organization_id", data.organization_id);
       }
 
-      Array.from(data.images).forEach((file: unknown) => {
-        if (file instanceof File) {
-          formData.append("images", file);
-        }
-      });
+      if (data.images) {
+        Array.from(data.images).forEach((file: unknown) => {
+          if (file instanceof File) {
+            formData.append("images", file);
+          }
+        });
+      }
 
-      const newPub = await createPublication(formData);
-      navigate({ to: "/pet/$id", params: { id: newPub.id } });
+      if (isEditing && initialData) {
+        const updatedPub = await updatePublication({ id: initialData.id, data: formData });
+        navigate({ to: "/pet/$id", params: { id: updatedPub.id } });
+      } else {
+        const newPub = await createPublication(formData);
+        navigate({ to: "/pet/$id", params: { id: newPub.id } });
+      }
     } catch (err: unknown) {
       console.error(err);
-      setServerError("Erro ao publicar. Verifique os dados e tente novamente.");
+      
+      let errorMessage = `Erro ao ${isEditing ? "salvar" : "publicar"}. Verifique os dados e tente novamente.`;
+      if (typeof err === "object" && err !== null && "response" in err) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const responseData = (err as any).response?.data;
+        if (responseData && typeof responseData === "object") {
+          const details = Object.entries(responseData)
+            .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(" ") : v}`)
+            .join(" | ");
+          if (details) errorMessage = `Erro: ${details}`;
+        }
+      }
+      setServerError(errorMessage);
     }
   };
 
@@ -124,8 +174,12 @@ export function PublicationForm() {
         animate={{ opacity: 1, y: 0 }}
         className="bg-white/80 dark:bg-neutral-900/60 backdrop-blur-xl border border-slate-200 dark:border-white/10 rounded-3xl p-8 max-w-2xl w-full shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
       >
-        <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-2">Publicar um Animal</h2>
-        <p className="text-slate-600 dark:text-neutral-400 mb-8">Preencha as informações do animal para ajudá-lo a encontrar um novo lar.</p>
+        <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-2">
+          {isEditing ? "Editar Animal" : "Publicar um Animal"}
+        </h2>
+        <p className="text-slate-600 dark:text-neutral-400 mb-8">
+          {isEditing ? "Atualize as informações do animal." : "Preencha as informações do animal para ajudá-lo a encontrar um novo lar."}
+        </p>
 
         {serverError && (
           <div className="mb-6 p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-400 rounded-xl text-sm">
@@ -151,6 +205,11 @@ export function PublicationForm() {
                   hover:file:bg-indigo-100 dark:hover:file:bg-indigo-500/30
                   transition-colors cursor-pointer"
               />
+              {isEditing && (
+                <p className="text-xs text-slate-500 mt-1">
+                  Se você não selecionar novas fotos, as fotos atuais serão mantidas.
+                </p>
+              )}
               {errors.images && <p className="mt-1 text-sm text-red-500">{errors.images.message as string}</p>}
             </div>
             
@@ -257,7 +316,7 @@ export function PublicationForm() {
             </div>
           </div>
 
-          {myApprovedOrgs.length > 0 && (
+          {(!isEditing && myApprovedOrgs.length > 0) && (
             <div className="space-y-4">
               <h3 className="text-lg font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-white/5 pb-2">Vincular a uma ONG</h3>
               <div className="flex flex-col gap-1.5">
@@ -275,13 +334,21 @@ export function PublicationForm() {
               </div>
             </div>
           )}
+          
+          {isEditing && initialData?.organization_id && (
+             <div className="space-y-4">
+              <p className="text-sm text-indigo-600 bg-indigo-50 p-4 rounded-xl border border-indigo-100 dark:bg-indigo-900/20 dark:border-indigo-800 dark:text-indigo-300">
+                Esta publicação está vinculada à ONG <strong>{initialData.organization?.name}</strong>.
+              </p>
+             </div>
+          )}
 
           <Button 
             type="submit" 
             className="w-full h-14 text-lg font-bold"
-            isLoading={isCreating}
+            isLoading={isLoading}
           >
-            Publicar Animal
+            {isEditing ? "Salvar Alterações" : "Publicar Animal"}
           </Button>
         </form>
       </motion.div>

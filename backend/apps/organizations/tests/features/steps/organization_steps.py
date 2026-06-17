@@ -1,10 +1,9 @@
-import uuid
-from behave import given, when, then
-from rest_framework.test import APIClient
+from behave import given, then, when
 from django.contrib.auth import get_user_model
+from rest_framework.test import APIClient
 
-from apps.organizations.models import Organization, Membership
-from apps.organizations.domain.value_objects import OrganizationStatus, MembershipRole
+from apps.organizations.domain.value_objects import OrganizationStatus
+from apps.organizations.models import Membership, Organization
 
 User = get_user_model()
 
@@ -27,7 +26,7 @@ def step_when_register_organization(context, org_name):
         "address": "Test Address",
         "description": "NGO Description",
     }
-    
+
     # Criaremos o mock do arquivo para não quebrar a view real
     from django.core.files.uploadedfile import SimpleUploadedFile
     mock_file = SimpleUploadedFile("doc.pdf", b"file_content", content_type="application/pdf")

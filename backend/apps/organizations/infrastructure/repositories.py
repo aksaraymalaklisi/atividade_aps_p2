@@ -129,8 +129,8 @@ class DjangoMembershipRepository(MembershipRepositoryInterface):
             model = Membership.objects.get(id=id)
             return MembershipEntity(
                 id=model.id,
-                user_id=getattr(model, "user_id"),
-                organization_id=getattr(model, "organization_id"),
+                user_id=model.user_id,
+                organization_id=model.organization_id,
                 role=MembershipRole(model.role),
                 created_at=model.created_at,
             )
@@ -145,8 +145,8 @@ class DjangoMembershipRepository(MembershipRepositoryInterface):
         return [
             MembershipEntity(
                 id=m.id,
-                user_id=getattr(m, "user_id"),
-                organization_id=getattr(m, "organization_id"),
+                user_id=m.user_id,
+                organization_id=m.organization_id,
                 role=MembershipRole(m.role),
                 created_at=m.created_at,
             )
@@ -161,8 +161,8 @@ class DjangoMembershipRepository(MembershipRepositoryInterface):
             model = Membership.objects.get(user_id=user_id, organization_id=organization_id)
             return MembershipEntity(
                 id=model.id,
-                user_id=getattr(model, "user_id"),
-                organization_id=getattr(model, "organization_id"),
+                user_id=model.user_id,
+                organization_id=model.organization_id,
                 role=MembershipRole(model.role),
                 created_at=model.created_at,
             )
@@ -174,8 +174,8 @@ class DjangoMembershipRepository(MembershipRepositoryInterface):
         return [
             MembershipEntity(
                 id=m.id,
-                user_id=getattr(m, "user_id"),
-                organization_id=getattr(m, "organization_id"),
+                user_id=m.user_id,
+                organization_id=m.organization_id,
                 role=MembershipRole(m.role),
                 created_at=m.created_at,
             )
@@ -187,8 +187,8 @@ class DjangoMembershipRepository(MembershipRepositoryInterface):
         return [
             MembershipEntity(
                 id=m.id,
-                user_id=getattr(m, "user_id"),
-                organization_id=getattr(m, "organization_id"),
+                user_id=m.user_id,
+                organization_id=m.organization_id,
                 role=MembershipRole(m.role),
                 created_at=m.created_at,
             )

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { usePublications } from "../hooks/usePublications";
 import { PetCard } from "../components/PetCard";
-import { PublicationFilters, FilterData } from "../components/PublicationFilters";
+import { PublicationFilters, type FilterData } from "../components/PublicationFilters";
 
 export function HomePage() {
   const [filters, setFilters] = useState<Record<string, string>>({});
@@ -17,6 +17,7 @@ export function HomePage() {
     if (values.species) activeFilters['pet__species'] = values.species;
     if (values.size) activeFilters['pet__size'] = values.size;
     if (values.gender) activeFilters['pet__gender'] = values.gender;
+    if (values.include_adopted) activeFilters['include_adopted'] = 'true';
     setFilters(activeFilters);
   };
 
