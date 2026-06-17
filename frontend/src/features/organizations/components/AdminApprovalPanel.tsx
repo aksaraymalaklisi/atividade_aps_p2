@@ -91,7 +91,7 @@ export function AdminApprovalPanel() {
                       </div>
                       <p className="text-sm text-indigo-700 dark:text-indigo-200 font-medium mb-3">Estatuto Comprobatório</p>
                       <a
-                        href={`http://localhost:8000${org.document_url}`}
+                        href={`${import.meta.env.VITE_BACKEND_BASE || 'http://localhost:8000'}${org.document_url}` }
                         target="_blank"
                         rel="noreferrer"
                         className="text-xs font-semibold uppercase tracking-wider bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg transition-colors w-full"

@@ -29,6 +29,21 @@ CORS_ALLOWED_ORIGINS = require_env(
     description="Comma-separated list of allowed frontend origins (e.g. https://petadopt.example.com)",
 ).split(",")
 
+# Validate CORS origins: ensure each entry is a non-empty URL starting with http:// or https://
+_raw_cors = CORS_ALLOWED_ORIGINS
+_validated_origins = []
+for _o in _raw_cors:
+    _s = _o.strip()
+    if not _s:
+        continue
+    if not (_s.startswith("http://") or _s.startswith("https://")):
+        raise ValueError(
+            "Invalid CORS origin '%s'. Each origin must be a full URL starting with http:// or https://."
+            % _s
+        )
+    _validated_origins.append(_s)
+
+CORS_ALLOWED_ORIGINS = _validated_origins
 # --- Database ---
 # In production, DATABASE_URL components can be overridden individually.
 # The base.py defaults point to 'db:5432' which works within Docker Compose.

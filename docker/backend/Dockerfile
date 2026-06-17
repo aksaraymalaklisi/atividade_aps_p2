@@ -46,6 +46,9 @@ COPY requirements/production.txt requirements/production.txt
 RUN pip install --no-cache-dir -r requirements/production.txt
 
 COPY . .
+## Ensure staticfiles and media directories exist and are writable by the non-root user
+RUN mkdir -p /app/staticfiles /app/media && chown -R appuser:appgroup /app/staticfiles /app/media || true
+
 COPY docker-entrypoint.sh docker-entrypoint.sh
 RUN chmod +x docker-entrypoint.sh
 
@@ -59,7 +62,7 @@ ENTRYPOINT ["/app/docker-entrypoint.sh"]
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health/')" || exit 1
+    CMD python -c "from urllib.request import Request, urlopen; req=Request('http://127.0.0.1:8000/api/health/'); req.add_header('Host', 'api.aksaraymalaklisi.net'); urlopen(req)" || exit 1
 
 CMD ["gunicorn", "config.wsgi:application", \
      "--bind", "0.0.0.0:8000", \

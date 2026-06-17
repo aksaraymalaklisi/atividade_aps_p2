@@ -75,7 +75,7 @@ export function ChatRoomPage() {
             <div className="h-10 w-10 overflow-hidden rounded-full bg-slate-200 dark:bg-neutral-800">
               {room?.publication_image_url && (
                 <img 
-                  src={room.publication_image_url.startsWith('http') ? room.publication_image_url : `http://localhost:8000${room.publication_image_url}`} 
+                  src={room.publication_image_url.startsWith('http') ? room.publication_image_url : `${import.meta.env.VITE_BACKEND_BASE || 'http://localhost:8000'}${room.publication_image_url}`} 
                   alt={room.publication_title}
                   className="h-full w-full object-cover"
                 />

@@ -29,6 +29,12 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+# Allow injecting the frontend API base at build time (Vite reads VITE_* env vars)
+ARG VITE_API_URL
+ARG VITE_BACKEND_BASE
+ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_BACKEND_BASE=${VITE_BACKEND_BASE}
+
 RUN npm run build
 
 # --- Stage: production ---

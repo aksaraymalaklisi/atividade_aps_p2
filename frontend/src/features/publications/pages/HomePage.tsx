@@ -51,7 +51,7 @@ export function HomePage() {
           className="text-5xl md:text-7xl font-black text-slate-900 dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-white dark:via-neutral-200 dark:to-neutral-500 tracking-tight mb-6"
         >
           Conectando Pets a <br className="hidden md:block" />
-          <span className="text-indigo-600 dark:text-indigo-400">Famílias Amorosas</span>
+          <span className="text-indigo-600 dark:text-indigo-400">Novas Famílias</span>
         </motion.h1>
 
         <motion.p 

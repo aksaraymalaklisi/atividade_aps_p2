@@ -46,7 +46,7 @@ export function ChatListPage() {
               <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-100 dark:bg-neutral-800">
                 {chat.publication_image_url ? (
                   <img 
-                    src={chat.publication_image_url.startsWith('http') ? chat.publication_image_url : `http://localhost:8000${chat.publication_image_url}`} 
+                    src={chat.publication_image_url.startsWith('http') ? chat.publication_image_url : `${import.meta.env.VITE_BACKEND_BASE || 'http://localhost:8000'}${chat.publication_image_url}`} 
                     alt={chat.publication_title}
                     className="h-full w-full object-cover"
                   />

@@ -150,7 +150,7 @@ export function PublicationDetailPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
-                src={currentImage.image.startsWith('/') ? `http://localhost:8000${currentImage.image}` : currentImage.image}
+                src={currentImage.image.startsWith('/') ? `${import.meta.env.VITE_BACKEND_BASE || 'http://localhost:8000'}${currentImage.image}` : currentImage.image}
                 alt={pet.name}
                 className="w-full h-full object-cover"
               />
@@ -177,7 +177,7 @@ export function PublicationDetailPage() {
                   }`}
                 >
                   <img 
-                    src={img.image.startsWith('/') ? `http://localhost:8000${img.image}` : img.image} 
+                    src={img.image.startsWith('/') ? `${import.meta.env.VITE_BACKEND_BASE || 'http://localhost:8000'}${img.image}` : img.image} 
                     alt={`Preview ${idx + 1}`} 
                     className="w-full h-full object-cover"
                   />

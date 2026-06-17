@@ -6,9 +6,9 @@ OpenAPI documentation is served at /api/docs/ and /api/schema/.
 """
 
 from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from django.views.static import serve as static_serve
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -34,5 +34,11 @@ urlpatterns = [
     ),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# In production, serve uploaded media files through Django if no external media server is configured.
+urlpatterns += [
+    path(
+        "media/<path:path>",
+        static_serve,
+        {"document_root": settings.MEDIA_ROOT},
+    ),
+]

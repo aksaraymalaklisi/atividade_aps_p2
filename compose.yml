@@ -36,6 +36,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    container_name: atividade_aps_p2-backend
+    volumes:
+      - backend_media:/app/media
     restart: unless-stopped
 
   frontend:
@@ -43,9 +46,14 @@ services:
       context: ./frontend
       dockerfile: ../docker/frontend/Dockerfile
       target: production
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+        VITE_BACKEND_BASE: ${VITE_BACKEND_BASE}
     ports:
       - "80:80"
+    container_name: atividade_aps_p2-frontend
     restart: unless-stopped
 
 volumes:
   pgdata:
+  backend_media:

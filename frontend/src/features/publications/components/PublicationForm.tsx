@@ -64,7 +64,7 @@ export function PublicationForm({ initialData }: PublicationFormProps = {}) {
   const isEditing = !!initialData;
   const isLoading = isCreating || isUpdating;
 
-  const getFullImageUrl = (url: string) => url.startsWith('/') ? `http://localhost:8000${url}` : url;
+  const getFullImageUrl = (url: string) => url.startsWith('/') ? `${import.meta.env.VITE_BACKEND_BASE || 'http://localhost:8000'}${url}` : url;
 
   const [previewUrls, setPreviewUrls] = useState<string[]>(
     initialData 

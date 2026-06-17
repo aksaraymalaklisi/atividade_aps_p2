@@ -9,7 +9,7 @@ interface PetCardProps {
 export function PetCard({ publication }: PetCardProps) {
   const { pet, organization, publisher_name } = publication;
   const primaryImage = pet.images.find(img => img.is_primary) || pet.images[0];
-  const imageUrl = primaryImage ? `http://localhost:8000${primaryImage.image}` : "/placeholder-pet.png"; // We will fix URL base handling later, assuming localhost for dev
+  const imageUrl = primaryImage ? `${import.meta.env.VITE_BACKEND_BASE || 'http://localhost:8000'}${primaryImage.image}` : "/placeholder-pet.png";
 
   const genderIcon = pet.gender === "MALE" ? "♂" : pet.gender === "FEMALE" ? "♀" : "";
   const genderColor = pet.gender === "MALE" ? "text-blue-500 bg-blue-100 dark:bg-blue-500/20" : pet.gender === "FEMALE" ? "text-pink-500 bg-pink-100 dark:bg-pink-500/20" : "text-slate-500 bg-slate-100 dark:bg-slate-500/20";

@@ -7,7 +7,9 @@ show_error() {
 }
 
 require_env() {
-  if [ -z "${!1}" ]; then
+  # POSIX-compatible indirect expansion (works with /bin/sh)
+  eval _val="\$$1"
+  if [ -z "$_val" ]; then
     show_error "Required environment variable $1 is not set."
     exit 1
   fi
