@@ -57,7 +57,9 @@ def step_impl_error_response(context, status_code):
 
 @then('the error code should be "{error_code}"')  # type: ignore
 def step_impl_error_code(context, error_code):
-    assert context.response.data.get("code") == error_code, f"Expected {error_code}, got {context.response.data.get('code')}"
+    assert context.response.data.get("code") == error_code, (
+        f"Expected {error_code}, got {context.response.data.get('code')}"
+    )
 
 
 @given('a user already exists with email "{email}" and password "{password}"')  # type: ignore

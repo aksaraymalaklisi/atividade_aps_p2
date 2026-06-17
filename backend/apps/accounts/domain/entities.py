@@ -21,6 +21,7 @@ class UserEntity(BaseEntity):
     phone: str = ""
     show_phone: bool = False
     is_operator: bool = False
+    is_staff: bool = False
     is_active: bool = True
     password_hash: str = ""
 

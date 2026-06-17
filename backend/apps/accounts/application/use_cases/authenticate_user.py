@@ -45,4 +45,5 @@ class AuthenticateUserUseCase(BaseUseCase[AuthenticateUserInput, AuthenticateUse
             email=user.email,
             username=user.username,
             is_operator=user.is_operator,
+            is_staff=user.is_staff,
         )

@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create base instance
 export const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1/",
   headers: {
     "Content-Type": "application/json",
   },
@@ -29,7 +29,7 @@ axiosClient.interceptors.response.use(
       if (refreshToken) {
         try {
           const response = await axios.post(
-            `${import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1"}/accounts/token/refresh/`,
+            `${import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1/"}accounts/token/refresh/`,
             { refresh: refreshToken }
           );
           

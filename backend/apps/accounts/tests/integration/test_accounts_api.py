@@ -18,6 +18,7 @@ def create_user(db):
         user.set_password(password)
         user.save()
         return user
+
     return make_user
 
 

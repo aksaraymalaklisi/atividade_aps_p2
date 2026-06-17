@@ -26,7 +26,10 @@ class RegisterUserView(APIView):
         serializer = RegisterUserRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        use_case = RegisterUserUseCase(user_repository=DjangoUserRepository())
+        use_case = RegisterUserUseCase(
+            user_repository=DjangoUserRepository(),
+            hash_service=DjangoPasswordHashService(),
+        )
 
         try:
             output_dto = use_case.execute(serializer.to_dto())
@@ -59,15 +62,18 @@ class AuthenticateUserView(APIView):
             # we need to generate tokens for the Django User object manually.
             # In Clean Architecture, infrastructure bridges this gap.
             from apps.accounts.infrastructure.models import User as DjangoUser
+
             django_user = DjangoUser.objects.get(id=output_dto.id)
 
             refresh = RefreshToken.for_user(django_user)
 
-            response_data = TokenResponseSerializer({
-                "access": str(refresh.access_token),
-                "refresh": str(refresh),
-                "user": output_dto,
-            }).data
+            response_data = TokenResponseSerializer(
+                {
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
+                    "user": output_dto,
+                }
+            ).data
 
             return Response(response_data, status=status.HTTP_200_OK)
 

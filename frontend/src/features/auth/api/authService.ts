@@ -3,17 +3,17 @@ import type { LoginFormData, RegisterFormData, AuthResponse, User } from "../sch
 
 export const authService = {
   login: async (data: LoginFormData): Promise<AuthResponse> => {
-    const response = await axiosClient.post<AuthResponse>("/accounts/login/", data);
+    const response = await axiosClient.post<AuthResponse>("accounts/login/", data);
     return response.data;
   },
 
   register: async (data: RegisterFormData): Promise<User> => {
-    const response = await axiosClient.post<User>("/accounts/register/", data);
+    const response = await axiosClient.post<User>("accounts/register/", data);
     return response.data;
   },
 
   getProfile: async (): Promise<User> => {
-    const response = await axiosClient.get<User>("/accounts/profile/");
+    const response = await axiosClient.get<User>("accounts/profile/");
     return response.data;
   },
   

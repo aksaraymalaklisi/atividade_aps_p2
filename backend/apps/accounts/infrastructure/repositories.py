@@ -24,6 +24,7 @@ class DjangoUserRepository(UserRepositoryInterface):
             phone=model.phone,
             show_phone=model.show_phone,
             is_operator=model.is_operator,
+            is_staff=model.is_staff,
             is_active=model.is_active,
             password_hash=model.password,
         )
@@ -36,6 +37,7 @@ class DjangoUserRepository(UserRepositoryInterface):
         model.phone = entity.phone
         model.show_phone = entity.show_phone
         model.is_operator = entity.is_operator
+        model.is_staff = entity.is_staff
         model.is_active = entity.is_active
         model.password = entity.password_hash
 

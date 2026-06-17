@@ -480,6 +480,7 @@ Red → Green → Refactor
 ```
 
 **Exemplo de teste unitário (domain):**
+
 ```python
 # apps/accounts/tests/unit/test_register_user.py
 
@@ -498,6 +499,7 @@ def test_register_user_creates_user_with_hashed_password():
 ```
 
 **Frontend (vitest + React Testing Library + MSW):**
+
 ```typescript
 // features/auth/components/__tests__/LoginForm.test.tsx
 
@@ -643,6 +645,7 @@ class EnvConfig:
 ### 9.4 Docker Compose
 
 **`compose.dev.yml`** — Desenvolvimento:
+
 ```yaml
 services:
   db:
@@ -687,6 +690,7 @@ volumes:
 ```
 
 **`compose.yml`** — Produção:
+
 ```yaml
 services:
   db:
@@ -782,6 +786,7 @@ graph LR
 ### 10.3 Artefatos de CI
 
 Cada execução do pipeline produz:
+
 - Relatório de testes (pytest JUnit XML + vitest)
 - Relatório de cobertura
 - Imagens Docker taggeadas com SHA do commit
@@ -872,6 +877,7 @@ docs/
 ### 12.2 README.md (Repositório)
 
 O README conterá:
+
 - Descrição do problema
 - Screenshot/GIF do sistema funcionando
 - Link de acesso ao sistema publicado
@@ -903,6 +909,7 @@ O README conterá:
 ## 14. Fases de Execução
 
 ### Fase 1 — Fundação do Projeto
+>
 > Reestruturar repositório, configurar tooling, Docker dev, pipeline CI básico.
 
 - Criar estrutura monorepo (`backend/`, `frontend/`, `docs/`, `docker/`)
@@ -916,6 +923,7 @@ O README conterá:
 - Documentar setup em `docs/development/setup.md`
 
 ### Fase 2 — Usuários & Autenticação
+>
 > Custom User model, JWT auth, roles (Operador), registro, login.
 
 - Implementar domain entities (User)
@@ -927,6 +935,7 @@ O README conterá:
 - BDD: cenários de registro e login
 
 ### Fase 3 — Organizações
+>
 > CRUD de organizações, workflow de aprovação, roles (Owner/Leader/Member), audit logging.
 
 - Implementar domain entities (Organization, Membership com 3 roles: Owner/Leader/Member)
@@ -938,6 +947,7 @@ O README conterá:
 - TDD + BDD
 
 ### Fase 4 — Publicações & Pets
+>
 > CRUD de publicações, listagem/busca, upload de imagens.
 
 - Implementar domain entities (Publication, Pet, PetImage)
@@ -948,6 +958,7 @@ O README conterá:
 - TDD + BDD
 
 ### Fase 5 — Chat
+>
 > Sistema de chat entre interessados e publicantes.
 
 - Implementar domain entities (ChatRoom, ChatMessage)
@@ -956,6 +967,7 @@ O README conterá:
 - TDD + BDD
 
 ### Fase 6 — CI/CD & Produção
+>
 > Pipeline completa, imagens otimizadas, deploy.
 
 - Finalizar Dockerfiles de produção (multi-stage otimizado)
@@ -974,6 +986,7 @@ O README conterá:
 - Smoke tests pós-deploy
 
 ### Fase 7 — Documentação & Polish
+>
 > Documentação completa, evidências de Clean Code, revisão final.
 
 - Escrever toda documentação em `docs/`

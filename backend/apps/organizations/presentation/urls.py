@@ -1,7 +1,13 @@
-"""Organizations URL configuration — endpoints will be implemented in Phase 3."""
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
-from typing import Any
+from apps.organizations.presentation.views import OrganizationViewSet
 
 app_name = "organizations"
 
-urlpatterns: list[Any] = []
+router = DefaultRouter()
+router.register(r"", OrganizationViewSet, basename="organization")
+
+urlpatterns = [
+    path("", include(router.urls)),
+]

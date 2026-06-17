@@ -35,13 +35,13 @@ export function RegisterForm() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full max-w-md p-8 rounded-3xl bg-white/60 backdrop-blur-xl border border-white/40 shadow-2xl shadow-indigo-100"
+      className="w-full max-w-md p-8 rounded-3xl bg-white/60 dark:bg-neutral-900/60 backdrop-blur-xl border border-slate-200 dark:border-white/10 shadow-2xl shadow-indigo-100 dark:shadow-none transition-colors duration-300"
     >
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-500">
+        <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-500 dark:from-indigo-400 dark:to-violet-400">
           Criar Conta
         </h2>
-        <p className="text-slate-500 mt-2">Junte-se à nossa comunidade</p>
+        <p className="text-slate-500 dark:text-neutral-400 mt-2 transition-colors">Junte-se à nossa comunidade</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -83,7 +83,7 @@ export function RegisterForm() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="p-3 rounded-lg bg-red-50 text-red-600 text-sm text-center border border-red-100"
+            className="p-3 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-sm text-center border border-red-100 dark:border-red-500/20 transition-colors"
           >
             {errors.root.message}
           </motion.div>

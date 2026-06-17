@@ -2,6 +2,7 @@ from apps.accounts.application.dtos import RegisterUserInput, RegisterUserOutput
 from apps.accounts.domain.entities import UserEntity
 from apps.accounts.domain.exceptions import UserAlreadyExistsError
 from apps.accounts.domain.repositories import UserRepositoryInterface
+from apps.accounts.domain.services import PasswordHashServiceInterface
 from core.base_use_case import BaseUseCase
 
 
@@ -13,18 +14,20 @@ class RegisterUserUseCase(BaseUseCase[RegisterUserInput, RegisterUserOutput]):
     must be unique across the platform.
     """
 
-    def __init__(self, user_repository: UserRepositoryInterface) -> None:
+    def __init__(
+        self, 
+        user_repository: UserRepositoryInterface,
+        hash_service: PasswordHashServiceInterface
+    ) -> None:
         self.user_repository = user_repository
+        self.hash_service = hash_service
 
     def execute(self, request: RegisterUserInput) -> RegisterUserOutput:
         # Check if user already exists
         if self.user_repository.exists_by_email_or_username(request.email, request.username):
             raise UserAlreadyExistsError()
 
-        # In a real scenario, we should also hash the password here using a Domain Service
-        # For simplicity in this Clean Architecture demo, we might defer password hashing
-        # to the Infrastructure repository or a dedicated HashService.
-        # But we'll assume the entity holds the raw password momentarily or it's hashed by a service.
+        hashed_password = self.hash_service.hash(request.password)
 
         # Create domain entity
         new_user = UserEntity(
@@ -36,6 +39,7 @@ class RegisterUserUseCase(BaseUseCase[RegisterUserInput, RegisterUserOutput]):
             show_phone=request.show_phone,
             is_active=True,
             is_operator=False,
+            password_hash=hashed_password,
         )
 
         # Save via repository (which handles ID generation and persistence)

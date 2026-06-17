@@ -44,3 +44,4 @@ class AuthenticateUserOutput:
     email: str
     username: str
     is_operator: bool
+    is_staff: bool
