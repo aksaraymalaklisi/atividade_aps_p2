@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion } from "framer-motion";
@@ -58,7 +58,6 @@ export function PublicationForm() {
   const {
     register,
     handleSubmit,
-    control,
     setValue,
     formState: { errors },
   } = useForm<FormData>({
@@ -104,13 +103,15 @@ export function PublicationForm() {
         formData.append("organization_id", data.organization_id);
       }
 
-      Array.from(data.images).forEach((file: any) => {
-        formData.append("images", file);
+      Array.from(data.images).forEach((file: unknown) => {
+        if (file instanceof File) {
+          formData.append("images", file);
+        }
       });
 
       const newPub = await createPublication(formData);
       navigate({ to: "/pet/$id", params: { id: newPub.id } });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
       setServerError("Erro ao publicar. Verifique os dados e tente novamente.");
     }

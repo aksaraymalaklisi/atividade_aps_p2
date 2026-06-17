@@ -6,7 +6,6 @@ from rest_framework.response import Response
 
 from apps.publications.application.strategies import LocalFileSystemImageStorageStrategy
 from apps.publications.application.use_cases.create_publication import CreatePublicationUseCase
-from apps.publications.application.use_cases.list_publications import ListPublicationsUseCase
 from apps.publications.domain.value_objects import PublicationStatus
 from apps.publications.infrastructure.repositories import DjangoPublicationRepository
 from apps.publications.models import Publication
@@ -22,7 +21,7 @@ class PublicationViewSet(viewsets.ModelViewSet):
     serializer_class = PublicationSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     parser_classes = [MultiPartParser]
-    
+
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = {
         'status': ['exact'],
@@ -46,18 +45,18 @@ class PublicationViewSet(viewsets.ModelViewSet):
         # We use a custom serializer for input to handle the multi-part file upload
         serializer = CreatePublicationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         dto = serializer.to_dto(user_id=request.user.id)
-        
+
         # Instantiate use case (in a real app, use Dependency Injection container)
         repo = DjangoPublicationRepository()
         strategy = LocalFileSystemImageStorageStrategy()
         use_case = CreatePublicationUseCase(repository=repo, image_strategy=strategy)
-        
+
         result = use_case.execute(dto)
-        
+
         # Return the created publication full data
         created_pub = self.get_queryset().get(id=result.publication_id)
         out_serializer = self.get_serializer(created_pub)
-        
+
         return Response(out_serializer.data, status=status.HTTP_201_CREATED)

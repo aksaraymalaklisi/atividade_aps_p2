@@ -1,5 +1,6 @@
 import logging
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 from apps.publications.domain.entities import PublicationEntity
 
@@ -12,7 +13,7 @@ class PublicationEventPublisher:
     Notifies registered listeners when a new publication is created.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._listeners: list[Callable[[PublicationEntity], Any]] = []
 
     def subscribe(self, listener: Callable[[PublicationEntity], Any]) -> None:

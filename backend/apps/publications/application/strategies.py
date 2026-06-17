@@ -24,11 +24,11 @@ class LocalFileSystemImageStorageStrategy(ImageUploadStrategy):
     def upload(self, file_name: str, file_content: BinaryIO) -> str:
         upload_dir = os.path.join(settings.MEDIA_ROOT, "publications")
         os.makedirs(upload_dir, exist_ok=True)
-        
+
         # Prevent file name collisions
         ext = os.path.splitext(file_name)[1]
         unique_name = f"{uuid.uuid4()}{ext}"
-        
+
         file_path = os.path.join(upload_dir, unique_name)
         with open(file_path, "wb") as f:
             f.write(file_content.read())

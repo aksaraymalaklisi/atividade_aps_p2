@@ -22,5 +22,5 @@ class CreatePublicationInputDTO:
 @dataclass(frozen=True)
 class CreatePublicationOutputDTO:
     publication_id: uuid.UUID
-    pet_id: uuid.UUID
+    pet_id: uuid.UUID | None
     status: str

@@ -34,7 +34,6 @@ class PublicationEntity(BaseEntity):
     publisher_id: uuid.UUID | None = None
     organization_id: uuid.UUID | None = None
     status: str = PublicationStatus.ACTIVE.value
-    created_at: datetime | None = None
     updated_at: datetime | None = None
     pet: PetEntity | None = None
 

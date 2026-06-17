@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Publication } from "../api/publicationsApi";
+import type { Publication } from "../api/publicationsApi";
 
 interface PetCardProps {
   publication: Publication;

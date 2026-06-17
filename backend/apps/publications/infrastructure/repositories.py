@@ -16,7 +16,7 @@ class DjangoPublicationRepository(PublicationRepositoryInterface):
     def _to_entity(self, model: Publication) -> PublicationEntity:
         pet_model = getattr(model, "pet", None)
         pet_entity = None
-        
+
         if pet_model:
             images = [
                 PetImageEntity(

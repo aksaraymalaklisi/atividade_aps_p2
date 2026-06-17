@@ -1,5 +1,5 @@
 import { axiosClient } from "@/shared/api/axiosClient";
-import { Organization } from "@/features/organizations/api/organizationsApi";
+import type { Organization } from "@/features/organizations/api/organizationsApi";
 
 export interface PetImage {
   id: string;

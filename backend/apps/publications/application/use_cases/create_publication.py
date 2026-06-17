@@ -55,6 +55,6 @@ class CreatePublicationUseCase(BaseUseCase[CreatePublicationInputDTO, CreatePubl
 
         return CreatePublicationOutputDTO(
             publication_id=saved_publication.id,
-            pet_id=saved_publication.pet.id,
+            pet_id=saved_publication.pet.id if saved_publication.pet else None,
             status=saved_publication.status,
         )

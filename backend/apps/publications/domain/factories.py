@@ -1,3 +1,4 @@
+import uuid
 from apps.publications.domain.entities import PetEntity, PublicationEntity
 
 
@@ -9,7 +10,7 @@ class PublicationFactory:
 
     @staticmethod
     def create_publication_with_pet(
-        publisher_id: str,
+        publisher_id: uuid.UUID,
         name: str,
         species: str,
         breed: str,
@@ -19,9 +20,9 @@ class PublicationFactory:
         description: str,
         vaccinated: bool,
         neutered: bool,
-        organization_id: str | None = None,
+        organization_id: uuid.UUID | None = None,
     ) -> tuple[PublicationEntity, PetEntity]:
-        
+
         publication = PublicationEntity(
             publisher_id=publisher_id,
             organization_id=organization_id,
