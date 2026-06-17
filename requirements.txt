@@ -1,4 +1,0 @@
-Django==5.0.4
-requests==2.31.0
-gunicorn==22.0.0
-Pillow==10.3.0

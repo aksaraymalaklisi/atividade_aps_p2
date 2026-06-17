@@ -1,0 +1,56 @@
+[project]
+name = "petadopt-backend"
+version = "1.0.0"
+description = "PetAdopt — Animal adoption platform API"
+requires-python = ">=3.14"
+
+[tool.ruff]
+target-version = "py314"
+line-length = 120
+src = ["."]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+    "C4",   # flake8-comprehensions
+    "DTZ",  # flake8-datetimez
+    "RUF",  # ruff-specific rules
+]
+ignore = [
+    "E501",   # line length (handled by formatter)
+    "RUF012", # mutable class attributes (Django models)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "core", "config"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.development"
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+testpaths = ["apps"]
+addopts = "--tb=short -q"
+
+[tool.mypy]
+python_version = "3.14"
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+ignore_missing_imports = true
+
+[tool.django-stubs]
+django_settings_module = "config.settings.development"
+
+[tool.coverage.run]
+source = ["apps"]
+omit = ["*/migrations/*", "*/tests/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
