@@ -7,8 +7,9 @@ Fails fast on startup with clear error messages if anything is missing.
 
 import os
 
-from .base import *  # noqa: F401, F403
-from core.env import require_env, optional_env
+from core.env import optional_env, require_env
+
+from .base import *  # noqa: F403
 
 # --- Security ---
 

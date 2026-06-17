@@ -1,18 +1,15 @@
-"""Accounts domain exceptions."""
-
-from core.exceptions import NotFoundError, ConflictError
+from core.exceptions import ApplicationError
 
 
-class UserNotFoundError(NotFoundError):
-    def __init__(self, identifier: str):
-        super().__init__(entity_name="User", entity_id=identifier)
+class UserAlreadyExistsError(ApplicationError):
+    """Raised when trying to register a user with an email or username that is already taken."""
+
+    def __init__(self, message: str = "User with this email or username already exists.") -> None:
+        super().__init__(message=message, code="USER_ALREADY_EXISTS")
 
 
-class EmailAlreadyExistsError(ConflictError):
-    def __init__(self, email: str):
-        super().__init__(message=f"A user with email '{email}' already exists.")
+class InvalidCredentialsError(ApplicationError):
+    """Raised when authentication fails due to wrong email or password."""
 
-
-class UsernameAlreadyExistsError(ConflictError):
-    def __init__(self, username: str):
-        super().__init__(message=f"A user with username '{username}' already exists.")
+    def __init__(self, message: str = "Invalid email or password.") -> None:
+        super().__init__(message=message, code="INVALID_CREDENTIALS")

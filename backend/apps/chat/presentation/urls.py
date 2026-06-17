@@ -1,7 +1,7 @@
 """Chat URL configuration — endpoints will be implemented in Phase 5."""
 
-from django.urls import path
+from typing import Any
 
 app_name = "chat"
 
-urlpatterns = []
+urlpatterns: list[Any] = []

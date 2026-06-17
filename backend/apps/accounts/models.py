@@ -6,6 +6,6 @@ The actual model definitions live in the infrastructure layer, following Clean A
 This file bridges the gap by re-exporting them.
 """
 
-from apps.accounts.infrastructure.models import User  # noqa: F401
+from apps.accounts.infrastructure.models import User
 
 __all__ = ["User"]

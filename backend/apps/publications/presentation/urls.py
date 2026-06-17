@@ -1,7 +1,7 @@
 """Publications URL configuration — endpoints will be implemented in Phase 4."""
 
-from django.urls import path
+from typing import Any
 
 app_name = "publications"
 
-urlpatterns = []
+urlpatterns: list[Any] = []

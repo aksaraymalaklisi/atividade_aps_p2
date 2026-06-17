@@ -5,7 +5,7 @@ Pure Python dataclass — no Django dependencies.
 Represents the core business concept of a user in the system.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from core.base_entity import BaseEntity
 
@@ -22,6 +22,7 @@ class UserEntity(BaseEntity):
     show_phone: bool = False
     is_operator: bool = False
     is_active: bool = True
+    password_hash: str = ""
 
     @property
     def full_name(self) -> str:

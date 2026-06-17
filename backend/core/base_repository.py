@@ -11,14 +11,14 @@ the Interface Segregation Principle (ISP).
 
 import uuid
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 from core.base_entity import BaseEntity
 
 T = TypeVar("T", bound=BaseEntity)
 
 
-class ReadableRepository(ABC, Generic[T]):
+class ReadableRepository[T: BaseEntity](ABC):
     """Interface for read-only data access operations."""
 
     @abstractmethod
@@ -34,7 +34,7 @@ class ReadableRepository(ABC, Generic[T]):
         """Return the total number of entities."""
 
 
-class WritableRepository(ABC, Generic[T]):
+class WritableRepository[T: BaseEntity](ABC):
     """Interface for write data access operations."""
 
     @abstractmethod

@@ -5,9 +5,11 @@ Uses safe defaults for all configuration — no environment variables required.
 The compose.dev.yml provides PostgreSQL automatically.
 """
 
-from .base import *  # noqa: F401, F403
+from .base import *  # noqa: F403
 
 # --- Security ---
+
+INSTALLED_APPS += ["behave_django"]  # noqa: F405
 
 SECRET_KEY = "django-insecure-dev-only-key-do-not-use-in-production"
 

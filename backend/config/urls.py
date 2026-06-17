@@ -5,14 +5,14 @@ All API endpoints are namespaced under /api/v1/.
 OpenAPI documentation is served at /api/docs/ and /api/schema/.
 """
 
-from django.contrib import admin
-from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import include, path
 from drf_spectacular.views import (
     SpectacularAPIView,
-    SpectacularSwaggerView,
     SpectacularRedocView,
+    SpectacularSwaggerView,
 )
 
 urlpatterns = [
@@ -28,7 +28,10 @@ urlpatterns = [
     path("api/v1/publications/", include("apps.publications.presentation.urls")),
     path("api/v1/chat/", include("apps.chat.presentation.urls")),
     # Health check
-    path("api/health/", lambda request: __import__("django.http", fromlist=["JsonResponse"]).JsonResponse({"status": "ok"})),
+    path(
+        "api/health/",
+        lambda request: __import__("django.http", fromlist=["JsonResponse"]).JsonResponse({"status": "ok"}),
+    ),
 ]
 
 if settings.DEBUG:

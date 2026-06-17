@@ -8,7 +8,7 @@ action (Single Responsibility Principle).
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 InputDTO = TypeVar("InputDTO")
 OutputDTO = TypeVar("OutputDTO")
@@ -24,7 +24,7 @@ class UseCaseOutput:
     """Base class for use case output DTOs."""
 
 
-class BaseUseCase(ABC, Generic[InputDTO, OutputDTO]):
+class BaseUseCase[InputDTO, OutputDTO](ABC):
     """
     Abstract base class for all use cases.
 
