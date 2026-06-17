@@ -3,9 +3,10 @@ import { usePublication } from "../hooks/usePublications";
 import { PublicationForm } from "../components/PublicationForm";
 
 export function EditPublicationPage() {
-  const { id } = useParams({ strict: false });
+  const params = useParams({ strict: false });
+  const id = params.id ?? "";
   const navigate = useNavigate();
-  const { publication, isLoading, error } = usePublication(id as string);
+  const { publication, isLoading, error } = usePublication(id);
 
   if (isLoading) {
     return (

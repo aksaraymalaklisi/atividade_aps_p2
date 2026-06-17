@@ -1,10 +1,8 @@
 import { Link } from '@tanstack/react-router';
 import { useChats } from '../hooks/useChat';
-import { useAuth } from '@/features/auth/hooks/useAuth';
 
 export function ChatListPage() {
   const { data: chats, isLoading } = useChats();
-  const { user } = useAuth();
 
   if (isLoading) {
     return (

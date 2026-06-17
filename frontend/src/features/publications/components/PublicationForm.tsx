@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion } from "framer-motion";
@@ -55,6 +55,7 @@ interface PublicationFormProps {
 }
 
 export function PublicationForm({ initialData }: PublicationFormProps = {}) {
+  const schema = getSchema(!!initialData);
   const navigate = useNavigate();
   const { createPublication, isCreating } = usePublications();
   const { updatePublication, isUpdating } = usePublication(initialData?.id || "");
@@ -80,7 +81,7 @@ export function PublicationForm({ initialData }: PublicationFormProps = {}) {
     setValue,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(getSchema(isEditing)),
+    resolver: zodResolver(schema) as Resolver<FormData>,
     defaultValues: initialData ? {
       name: initialData.pet.name,
       species: initialData.pet.species,
@@ -117,7 +118,7 @@ export function PublicationForm({ initialData }: PublicationFormProps = {}) {
     }
   };
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
     try {
       setServerError(null);
       const formData = new FormData();

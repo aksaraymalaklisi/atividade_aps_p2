@@ -46,12 +46,15 @@ COPY requirements/production.txt requirements/production.txt
 RUN pip install --no-cache-dir -r requirements/production.txt
 
 COPY . .
+COPY docker-entrypoint.sh docker-entrypoint.sh
+RUN chmod +x docker-entrypoint.sh
 
 # Collect static files
 RUN python manage.py collectstatic --noinput 2>/dev/null || true
 
 # Switch to non-root user
 USER appuser
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
 EXPOSE 8000
 
