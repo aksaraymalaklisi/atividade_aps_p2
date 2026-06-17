@@ -1,7 +1,11 @@
-"""Publications URL configuration — endpoints will be implemented in Phase 4."""
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
-from typing import Any
+from apps.publications.presentation.views import PublicationViewSet
 
-app_name = "publications"
+router = DefaultRouter()
+router.register(r"", PublicationViewSet, basename="publication")
 
-urlpatterns: list[Any] = []
+urlpatterns = [
+    path("", include(router.urls)),
+]

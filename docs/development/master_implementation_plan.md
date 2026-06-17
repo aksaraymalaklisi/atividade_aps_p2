@@ -221,6 +221,10 @@ erDiagram
 | **RN-11** | O Chat é criado quando um Usuário interessado inicia contato sobre uma Publicação específica. Chat tem histórico persistente. |
 | **RN-12** | Ações importantes geram audit log via Observer Pattern. O log é visível para Operadores e Líderes/Donos da organização (ex: "Membro X marcou Pet Y como adotado em DD/MM/AAAA"). |
 
+### 4.4 Páginas
+- **[MODIFY]** `frontend/src/features/publications/pages/HomePage.tsx`: Será a página principal do catálogo. Conterá a listagem paginada (grid de PetCards) e os filtros no topo ou lateral.
+- **[NEW]** `frontend/src/features/publications/pages/PublicationDetailPage.tsx`: Visão detalhada de um pet com carrossel de fotos (incluindo *thumbnails/previews* clicáveis na parte inferior), descrição rica e um botão "Tenho Interesse" (preparando o terreno para a Fase 5 de Chat).
+
 ---
 
 ## 5. Arquitetura Limpa — Mapeamento para Django
@@ -552,6 +556,10 @@ Funcionalidade: Criação de Organização
 | `@testing-library/react` | Testes de componentes React |
 | `msw` (Mock Service Worker) | Mock de API para testes frontend |
 | `playwright` | Testes e2e (BDD frontend) |
+
+> [!IMPORTANT]  
+> **Gerenciamento de Imagens:** 
+> O upload será limitado a **no máximo 5 imagens** por Pet para economizar armazenamento. Na interface de detalhes, haverá um carrossel com *preview thumbnails* para o usuário navegar entre as imagens com facilidade. Continuaremos usando a `LocalFileSystemStorageStrategy`.
 
 ---
 
